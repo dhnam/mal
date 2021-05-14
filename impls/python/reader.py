@@ -1,11 +1,6 @@
 import re
-# TODO put 'quote' or such in list with following element
+import mal_types
 
-bracket_pair = {
-        "(": ")",
-        "[": "]",
-        "{": "}",
-        }
 class Reader:
     def __init__(self, tokens=None, position=0):
         if (tokens == None):
@@ -51,13 +46,11 @@ def read_form(reader: Reader):
         return read_atom(reader)
 
 def read_list(reader: Reader, opener):
-    res = []
-    res.append(opener)
-    closer = bracket_pair[opener]
+    res = mal_types.MalList(opener)
     try:
         for i in reader:
             next_atom = read_form(reader)
-            if next_atom == closer:
+            if next_atom == res.closer:
                 break
             res.append(next_atom)
     except IndexError:
@@ -78,17 +71,24 @@ def read_atom(reader: Reader):
     if atom[0] == '"':
         if not is_proper_quote(atom):
             return "EOF"
-    if atom.isdecimal():
+    if is_integer(atom):
         return int(atom)
     if atom in special_chars:
         reader.next()
-        return [special_chars[atom], read_form(reader)]
+        res_lst = mal_types.MalList("(")
+        res_lst.append(special_chars[atom])
+        res_lst.append(read_form(reader))
+        return res_lst
     if atom == "^":
+        res_lst = mal_types.MalList("(")
+        res_lst.append("with-meta")
         reader.next()
         second = read_form(reader)
         reader.next()
         first = read_form(reader)
-        return ["with-meta", first, second]
+        res_lst.append(first)
+        res_lst.append(second)
+        return res_lst
     else:
         return atom
 
@@ -97,3 +97,9 @@ def is_proper_quote(string):
         return True
     return False
 
+def is_integer(string):
+    try:
+        int(string)
+        return True
+    except ValueError:
+        return False

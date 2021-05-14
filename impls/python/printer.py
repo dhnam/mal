@@ -1,15 +1,11 @@
 import reader
+import mal_types
 
 def pr_str(data):
-    if type(data) == list:
-        opener = data[0]
-        try:
-            closer = reader.bracket_pair[opener]
-            del data[0]
-        except KeyError:
-            opener = "("
-            closer = ")"
-        data_str =  " ".join(map(pr_str, data))
+    if type(data) == mal_types.MalList:
+        closer = data.closer
+        opener = data.opener
+        data_str =  " ".join([pr_str(x) for x in data])
         data_str = opener + data_str + closer
         return data_str
     else:
