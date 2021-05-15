@@ -1,3 +1,5 @@
+from mal_types import MalList
+
 class NotFoundException(Exception):
     def __init__(self, msg=""):
         self.msg = msg
@@ -7,9 +9,21 @@ class NotFoundException(Exception):
 class Env:
     pass
 class Env:
-    def __init__(self, outer: Env):
+    def __init__(self, outer: Env, binds=None, exprs=None):
+        if binds is None:
+            binds = []
+        if exprs is None:
+            exprs = []
+            
         self.outer = outer
         self.data = {}
+        for i in range(len(binds)):
+            if binds[i] == "&":
+                rest_exprs = MalList("(")
+                rest_exprs.extend(exprs[i:])
+                self.data[binds[i + 1]] = rest_exprs
+                break
+            self.data[binds[i]] = exprs[i]
 
     def set_(self, key, value):
         self.data[key] = value

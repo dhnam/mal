@@ -29,7 +29,6 @@ class Reader:
     def __len__(self):
         return len(self.tokens)
 
-
 def read_str(string):
     tokens = tokenize(string)
     return read_form(Reader(tokens))
@@ -54,7 +53,29 @@ def read_list(reader: Reader, opener):
                 break
             res.append(next_atom)
     except IndexError:
-        return "EOF"
+        raise EOFError
+    return res
+
+def escape(string):
+    escaped = False
+    res = ""
+    for s in string:
+        if not escaped:
+            if s == '\\':
+                escaped = True
+            else:
+                res += s
+        else:
+            if s == '"':
+                res += s
+            elif s == "n":
+                res += "\n"
+            elif s == "\\":
+                res += "\\"
+            else:
+                res += "\\"
+                res += s
+            escaped = False
     return res
 
 def read_atom(reader: Reader):
@@ -71,6 +92,7 @@ def read_atom(reader: Reader):
     if atom[0] == '"':
         if not is_proper_quote(atom):
             return "EOF"
+        return '"' + escape(atom[1:-1]) + '"'
     if is_integer(atom):
         return int(atom)
     if atom in special_chars:
@@ -89,6 +111,12 @@ def read_atom(reader: Reader):
         res_lst.append(first)
         res_lst.append(second)
         return res_lst
+    if atom == "true":
+        return True
+    if atom == "false":
+        return False
+    if atom == "nil":
+        return None
     else:
         return atom
 
