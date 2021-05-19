@@ -29,13 +29,18 @@ class Reader:
     def __len__(self):
         return len(self.tokens)
 
+class NoTokenException(Exception):
+    pass
+
 def read_str(string):
     tokens = tokenize(string)
+    if tokens == []:
+        raise NoTokenException()
     return read_form(Reader(tokens))
 
 def tokenize(string):
     mal_pattern = r'[\s,]*(~@|[\[\]{}()\'`~^@]|"(?:\\.|[^\\"])*"?|;.*|[^\s\[\]{}(\'"`,;)]*)' 
-    return [x for x in re.split(mal_pattern, string) if x != '']
+    return [x for x in re.split(mal_pattern, string) if x != '' and x[0] != ";"]
 
 def read_form(reader: Reader):
     token = reader.peek()
@@ -80,7 +85,6 @@ def escape(string):
 
 def read_atom(reader: Reader):
     atom = reader.peek()
-
     special_chars = {
                         "'": "quote",
                         "`": "quasiquote",

@@ -1,5 +1,6 @@
 import printer
-from mal_types import MalList
+from mal_types import MalList, MalAtom
+import reader
 
 def list_fn(*x):
     lst = MalList("(")
@@ -29,6 +30,30 @@ def print_(join=" ", print_readably=True):
         return None
     return inner
 
+def slurp(file_name):
+    with open(file_name[1:-1], "r") as f:
+        str_file = f.read()
+    return '"' + str_file + '"'
+
+def reset(atom, val):
+    atom.value = val
+    return val
+
+def swap(atom, func, *args):
+    if type(func) == type(lambda x: None):
+        atom.value = func(atom.value, *args)
+        return atom.value
+    else:
+        atom.value = func["fn"](atom.value, *args)
+        return atom.value
+
+def read_str(x):
+    try:
+        return reader.read_str(x[1:-1])
+    except reader.NoTokenException:
+        return None
+
+
 ns = {
         "+": lambda x, y: x + y,
         "-": lambda x, y: x - y,
@@ -47,4 +72,12 @@ ns = {
         "<=": lambda x, y: x<=y,
         ">": lambda x, y: x>y,
         ">=": lambda x, y: x>=y,
+        "read-string": read_str,
+        "slurp": slurp,
+        "atom": lambda x: MalAtom(x),
+        "atom?": lambda x: type(x) == MalAtom,
+        "deref": lambda x: x.value,
+        "reset!": reset,
+        "swap!": swap,
       }
+

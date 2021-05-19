@@ -8,3 +8,8 @@ class MalList(list):
         super().__init__(self, *args, **kwargs)
         self.opener = opener
         self.closer = MalList.bracket_pair[opener]
+
+class MalAtom:
+    def __init__(self, value):
+        self.value = value
+
