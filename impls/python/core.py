@@ -53,6 +53,24 @@ def read_str(x):
     except reader.NoTokenException:
         return None
 
+def cons(a, b):
+    temp = MalList("(")
+    temp.append(a)
+    for next_item in b:
+        temp.append(next_item)
+    return temp
+
+def concat(*a):
+    temp = MalList("(")
+    for next_list in a:
+        for next_item in next_list:
+            temp.append(next_item)
+    return temp
+
+def vec(a):
+    temp = MalList("[")
+    temp.extend(a)
+    return temp
 
 ns = {
         "+": lambda x, y: x + y,
@@ -79,5 +97,8 @@ ns = {
         "deref": lambda x: x.value,
         "reset!": reset,
         "swap!": swap,
+        "cons": cons,
+        "concat": concat,
+        "vec": vec,
       }
 
