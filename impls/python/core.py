@@ -72,6 +72,12 @@ def vec(a):
     temp.extend(a)
     return temp
 
+def rest(x):
+    temp = MalList("(")
+    if x is not None and len(x) > 0:
+        temp += x[1:]
+    return temp
+
 ns = {
         "+": lambda x, y: x + y,
         "-": lambda x, y: x - y,
@@ -100,5 +106,8 @@ ns = {
         "cons": cons,
         "concat": concat,
         "vec": vec,
+        "nth": lambda a, b: a[b], # Raise exception?
+        "first": lambda x: x[0] if x is not None and len(x) > 0 else None,
+        "rest": rest,
       }
 

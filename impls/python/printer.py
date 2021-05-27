@@ -28,7 +28,7 @@ def pr_str_nonlist(data, print_readably):
         return "false"
     if data is None:
         return "nil"
-    if type(data) == type(lambda x:None):
+    if type(data) == type(lambda x:None) or type(data) == dict:
         return "#<function>"
     if type(data) == mal_types.MalAtom:
         return "(atom " + pr_str(data.value, print_readably) + ")"
