@@ -1,11 +1,12 @@
-from mal_types import MalList
+from mal_types import MalList, MalException
 
-class NotFoundException(Exception):
+class NotFoundException(MalException):
     def __init__(self, msg=""):
         self.msg = msg
 
     def __str__(self):
         return self.msg
+
 class Env:
     pass
 class Env:
@@ -39,6 +40,6 @@ class Env:
         if env_key is not None:
             return env_key.data[key]
         
-        raise NotFoundException(key)
+        raise NotFoundException("\"'" + key + "' not found\"")
 
 

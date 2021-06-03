@@ -57,6 +57,15 @@ def read_list(reader: Reader, opener):
             if next_atom == res.closer:
                 break
             res.append(next_atom)
+
+        if opener == "{":
+            for i in range(0, len(res), 2):
+                res.dict[res[i]] = res[i + 1]
+            res.clear()
+            for x in sorted(res.dict):
+                res.append(x)
+                res.append(res.dict[x])
+
     except IndexError:
         raise EOFError
     return res

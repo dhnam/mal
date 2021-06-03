@@ -32,4 +32,4 @@ def pr_str_nonlist(data, print_readably):
         return "#<function>"
     if type(data) == mal_types.MalAtom:
         return "(atom " + pr_str(data.value, print_readably) + ")"
-    return data
+    return str(data)
