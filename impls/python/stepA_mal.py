@@ -20,7 +20,7 @@ def is_macro(func):
     except KeyError:
         return False
 
-def is_macro_call(ast, env: Env):
+def is_macro_call(ast, env:Env):
     if type(ast) == MalList and ast.opener == "(" and len(ast) > 0 and type(ast[0]) == str:
         try:
             is_macro_func = is_macro(env.get(ast[0]))
@@ -210,6 +210,8 @@ def main():
     argv_lst = MalList("(")
     argv_lst += ['"' + reader.read_str(x) + '"' for x in sys.argv[2:]]
     repl_env.set_("*ARGV*", argv_lst)
+    repl_env.set_("*host-language*", "python")
+    rep("(println (str \"Mal [\" *host-language* \"]\"))")
     if len(sys.argv) > 1:
         rep("(load-file \"" + sys.argv[1] + '")')
         return

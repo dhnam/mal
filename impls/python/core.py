@@ -231,7 +231,15 @@ def vals(h):
 
     return tmp
 
+def readline(prompt):
+    try:
+        print(prompt[1:-1], end='')
+        return strings(make_str=True)(input())
+    except EOFError:
+        return None
 
+def notImplemented():
+    raise MalException("not implemented")
 
 ns = {
         "+": lambda x, y: x + y,
@@ -285,5 +293,14 @@ ns = {
         "contains?": contains,
         "keys": keys,
         "vals": vals,
+        "readline": readline,
+        "time-ms": notImplemented,
+        "meta": notImplemented,
+        "with-meta": notImplemented,
+        "fn?": notImplemented,
+        "string?": notImplemented,
+        "number?": notImplemented,
+        "seq": notImplemented,
+        "conj": notImplemented,
 }
 
